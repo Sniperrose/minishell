@@ -9,31 +9,67 @@ void    ft_env(char **envp)
     }
 }
 
+int is_whitespace(char  c)
+{
+    if (c == 32 || (c >= 9 && c <= 13))
+        return (1);
+    return (0);
+}
+
 char    *ft_getstr(char *line)
 {
     int len;
     int i;
+    int f_sep;
     char    *str;
 
     len = 0;
     i = 0;
+    f_sep = 0;
+    str = NULL;
     while (is_whitespace(*line))
         line++;
     while (line[i] != '\0')
     {
         while (!is_whitespace(line[i]))
         {
-            len++
+            i++;
+            len++;
+            f_sep = 0;
         }
+        if (is_whitespace(line[i]) && f_sep == 0)
+        {
+            f_sep = 1;
+            len++;
+        }
+        while (is_whitespace(line[i]) && f_sep == 1)
+            i++;
     }
+    str = malloc(sizeof(char) * (len + 1));
+    if (!str)
+        return (NULL);
+    i = 0;
+    len = 0;
+    while (line[i] != '\0')
+    {
+        while (!is_whitespace(line[i]))
+        {
+            str[len] = line[i];
+            len++;
+            i++;
+            f_sep = 0;
+        }
+        if (is_whitespace(line[i]) && f_sep == 0)
+        {
+            str[len++] = ' ';
+            f_sep = 1;
+        }
+        while (is_whitespace(line[i]) && f_sep == 1)
+            i++;
+    }
+    str[len] = '\0';
+    // printf("%s", str);
     return (str);
-}
-
-int is_whitespace(char  c)
-{
-    if (c == 32 || (c >= 9 && c <= 13))
-        return (1);
-    return (0);
 }
 
 void    ft_echo(char *line)
@@ -65,7 +101,7 @@ int main    (int argc, char **argv, char **envp)
     {
         printf ("test\n");
         return (1);
-    }d
+    }
     char    *line;
     line = readline("test: ");
     while (strcmp(line, "exit"))

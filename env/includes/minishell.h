@@ -6,4 +6,12 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+typedef struct s_echo
+{
+    int     flag_n;
+    int     flag;
+    char    *str_echo;
+} t_echo;
+
+
 #endif

@@ -6,27 +6,14 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-typedef struct s_lexer
+typedef struct s_cmds
 {
-    char    *str;
-    t_tokens    token;
-    int         i;
-    struct s_lexer  *next;
-    struct s_lexer  *prev;
-}   t_lexer;
-
-
-
-typedef struct s_simple_cmds
-{
+    char    *name;
     char    **str;
-    int     (*builtin)(t_tools *, struct s_simple_cmds);
-    int     num_redirection;
-    char    *hd_file_name;
-    t_lexer *redirections;
-    struct s_simple_cmds    *next;
-    struct s_simple_cmds    *prev;
-} t_simple_cmds;
+    int     flag;
+} t_cmds;
 
-
+void    *ft_getcmds(t_cmds *test, char *line, char  **envp);
+void    *exec(t_cmds *command);
+void    ft_free_split(char **split, int n);
 #endif

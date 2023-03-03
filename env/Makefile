@@ -5,7 +5,8 @@ LIBFT_DIR = libft
 LFLAGS = -lreadline
 
 SRCS =	minishell_test.c\
-		try_builtin.c\
+		get_name_pars.c\
+		exec_cmds.c\
 
 OBJS = ${SRCS:.c=.o}
 

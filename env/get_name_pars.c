@@ -97,28 +97,33 @@ int get_size(char *line)
     return (size);
 }
 
-char    *ft_getstr(char  *line, int n)
+char    *ft_getline(char *line, int size)
 {
     int i;
+    char    *str;
 
-    i = 0;
-    split = NULL;
-    while (line[i] && !(is_whitespace(line[i])))
-        i++;
-    split = malloc(sizeof(char) * (i + 1));
-    if (!split)
+    if (!line)
+        return (NULL);
+    str = malloc(sizeof(char) * (size + 1));
+    if (!str)
         return (NULL);
     i = 0;
-    while (!is_whitespace(line[i]))
+    while (i < size)
     {
-        split[i] = line[i];
+        str[i] = line[i];
         i++;
     }
-    split[i] = '\0';
-    *line = line[i];
-    if (is_whitespace(*line))
-        line++;
-    return (line);
+    str[i] = '\0';
+    return (str);
+}
+
+int ft_getstart(char *line)
+{
+    int i = 0;
+
+    while (!is_whitespace(line[i]) && line[i])
+        i++;
+    return (i);
 }
 
 char    **ft_parser_echo(char *line)
@@ -126,6 +131,7 @@ char    **ft_parser_echo(char *line)
     char    **split;
     int     n_sep;
     int     i;
+    int     size;
 
     while (*line && is_whitespace(*line))
         line++;
@@ -139,21 +145,48 @@ char    **ft_parser_echo(char *line)
         return (split);
     }
     n_sep = get_size(line);
-    split = (char **)malloc((n_sep + 1) * sizeof(char *));
+    split = (char **)malloc((n_sep + 2) * sizeof(char *));
     if (!split)
         return (NULL);
     i = 0;
-    while (i < n_sep)
+    size = 0;
+    // printf("n_sep = %d\n", n_sep);
+    while (i <= n_sep)
     {
-        split[i] = ft_getstr(line, jusqua_sep(line));
+        size = 0;
+        while (is_whitespace(*line) && line)
+                line++;
+        size = ft_getstart(line);
+        // printf("---size %d---\n", start);
+        split[i] = ft_getline(line, size);
         if (!split[i])
         {
             ft_free_split(split, i);
             return (NULL);
         }
+        if (i < n_sep)
+            line += size;
+        // printf("line: %s| split[%d]: %s|\n", line, i, split[i]);
         i++;
     }
     split[i] = NULL;
+    return (split);
+}
+
+char    **ft_getpath(char *line)
+{
+    char    **split;
+
+    while (*line && is_whitespace(*line))
+        line++;
+    split = (char **)malloc(2 * sizeof(char *));
+    if (!split)
+            return (NULL);
+    if (strlen(line) == 0)
+        split[0] = strdup("");
+    else
+        split[0] = strdup(line);
+    split[1] = NULL;
     return (split);
 }
 
@@ -178,31 +211,38 @@ void    *ft_getcmds(t_cmds *test, char *line, char  **envp)
         if (!test->str)
             return (NULL);
     }
-    else if (!strcmp(tmp, "echo"))
+    // else if (!strcmp(tmp, "echo"))
+    else
     {
         test->str = ft_parser_echo(line + i);
         if (!test->str)
             return (NULL);
     }
+    // else
+    // {
+    //     test->str = ft_getpath(line + i);
+    //     if (!test->str)
+    //         return (NULL); 
+    // }
     return (test);
 }
 
-void    *exec(t_cmds *command)
-{
-    int i;
+// void    *exec(t_cmds *command)
+// {
+//     int i;
 
-    printf("cmd name: %s\n", command->name);
+//     printf("cmd name: %s\n", command->name);
 
-    i = 0;
-    if (command->str)
-    {
-        while (command->str[i])
-        {
-            printf("%s\n", command->str[i]);
-            // printf("hi err\n");
-            i++;
-        }
-    }
-    printf("---test_here---\n");
-    return (command);
-}
+//     i = 0;
+//     if (command->str)
+//     {
+//         while (command->str[i])
+//         {
+//             printf("%s\n", command->str[i]);
+//             // printf("hi err\n");
+//             i++;
+//         }
+//     }
+//     printf("---test_here---\n");
+//     return (command);
+// }

@@ -11,6 +11,7 @@ typedef struct s_cmds
 {
     char    *name;
     char    **str;
+    char    **env;
     int     flag;
 } t_cmds;
 

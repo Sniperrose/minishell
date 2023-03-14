@@ -1,5 +1,8 @@
 #include "includes/minishell.h"
 
+void    printf_echo_dollar
+
+
 void    *ft_exec_echo(t_cmds *echo)
 {
     int i;
@@ -14,10 +17,15 @@ void    *ft_exec_echo(t_cmds *echo)
     }
     while (echo->str[i])
     {
+        if (!(strcmp(echo->str[i], "*")))
+            printf("will print ls!");
+        else if (echo->str[i][0] == '$')
+            printf_echo_dollar(echo->str[i]);
+        else
             printf("%s", echo->str[i]);
-            if (echo->str[i + 1] != NULL)
-                printf(" ");
-            i++;
+        if (echo->str[i + 1] != NULL)
+            printf(" ");
+        i++;
     }
     if (n_line == 1)
         printf("\n");
@@ -29,9 +37,9 @@ void    *ft_exec_env(t_cmds *env)
     int i;
 
     i = 0;
-    while (env->str[i])
+    while (env->env[i])
     {
-        printf("%s\n", env->str[i]);
+        printf("%s\n", env->env[i]);
         i++;
     }
     return (env);
@@ -89,8 +97,10 @@ void    *exec(t_cmds *command)
         return (ft_exec_pwd(command));
     else if (!strcmp(command->name, "cd"))
         return (ft_exec_cd(command));
-    // else
-    //     ;
+    else if (!strcmp(command->name, "export"))
+        return (ft_exec_cd(command));
+    else if (!strcmp(command->name, "unset"))
+        return (ft_exec_cd(command));
     return (ft_err(command));
 }
 

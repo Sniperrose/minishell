@@ -150,14 +150,12 @@ char    **ft_parser_echo(char *line)
         return (NULL);
     i = 0;
     size = 0;
-    // printf("n_sep = %d\n", n_sep);
     while (i <= n_sep)
     {
         size = 0;
         while (is_whitespace(*line) && line)
                 line++;
         size = ft_getstart(line);
-        // printf("---size %d---\n", start);
         split[i] = ft_getline(line, size);
         if (!split[i])
         {
@@ -166,7 +164,6 @@ char    **ft_parser_echo(char *line)
         }
         if (i < n_sep)
             line += size;
-        // printf("line: %s| split[%d]: %s|\n", line, i, split[i]);
         i++;
     }
     split[i] = NULL;
@@ -192,9 +189,9 @@ char    **ft_getpath(char *line)
 
 void    *ft_getcmds(t_cmds *test, char *line, char  **envp)
 {
-    int i;
+    int     i;
     char    *tmp;
-
+    
     while (is_whitespace(*line))
         line++;
     i = 0;
@@ -205,27 +202,54 @@ void    *ft_getcmds(t_cmds *test, char *line, char  **envp)
     if (!tmp)
         return (NULL);
     test->name = tmp;
-    if (!strcmp(tmp, "env"))
+    if (envp)
     {
-        test->str = ft_copy_env(envp);
-        if (!test->str)
+        test->env = ft_copy_env(envp);
+        if (!test->env)
             return (NULL);
     }
-    // else if (!strcmp(tmp, "echo"))
-    else
-    {
-        test->str = ft_parser_echo(line + i);
-        if (!test->str)
-            return (NULL);
-    }
-    // else
-    // {
-    //     test->str = ft_getpath(line + i);
-    //     if (!test->str)
-    //         return (NULL); 
-    // }
+    test->str = ft_parser_echo(line + i);
+    if (!test->str)
+        return (NULL);
     return (test);
 }
+
+// void    *ft_getcmds(t_cmds *test, char *line, char  **envp)
+// {
+//     int i;
+//     char    *tmp;
+
+//     while (is_whitespace(*line))
+//         line++;
+//     i = 0;
+//     tmp = NULL;
+//     while (is_alpha(*(line + i)))
+//         i++;
+//     tmp = ft_getname(line, i);
+//     if (!tmp)
+//         return (NULL);
+//     test->name = tmp;
+//     if (!strcmp(tmp, "env"))
+//     {
+//         test->str = ft_copy_env(envp);
+//         if (!test->str)
+//             return (NULL);
+//     }
+//     // else if (!strcmp(tmp, "echo"))
+//     else
+//     {
+//         test->str = ft_parser_echo(line + i);
+//         if (!test->str)
+//             return (NULL);
+//     }
+//     // else
+//     // {
+//     //     test->str = ft_getpath(line + i);
+//     //     if (!test->str)
+//     //         return (NULL); 
+//     // }
+//     return (test);
+// }
 
 // void    *exec(t_cmds *command)
 // {

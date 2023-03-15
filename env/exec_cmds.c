@@ -1,29 +1,36 @@
 #include "includes/minishell.h"
 
-void    printf_echo_dollar
-
-
 void    *ft_exec_echo(t_cmds *echo)
 {
     int i;
     int n_line;
+    char    *env;
+    int printed;
 
     i = 0;
     n_line = 1;
+    printed = 0;
     if (echo->str[i] && !(strcmp(echo->str[i], "-n")))
     {
         n_line = 0;
         i++;
     }
+    env = NULL;
     while (echo->str[i])
     {
         if (!(strcmp(echo->str[i], "*")))
-            printf("will print ls!");
-        else if (echo->str[i][0] == '$')
-            printf_echo_dollar(echo->str[i]);
+            printed = printf("will print ls!");
+        else if (echo->str[i][0] == '$' && echo->str[i][1] != '\0')
+        {
+            env = getenv(&echo->str[i][1]);
+            if (env)
+                printed = printf ("%s", env);
+        }
         else
-            printf("%s", echo->str[i]);
-        if (echo->str[i + 1] != NULL)
+        {
+            printed = printf("%s", echo->str[i]);
+        }
+        if (echo->str[i + 1] != NULL && printed != 0)
             printf(" ");
         i++;
     }
@@ -73,7 +80,9 @@ void    *ft_exec_cd(t_cmds *cd)
         return (cd);
     }
     if (!strcmp(cd->str[0], "") || !strcmp(cd->str[0], "~"))
-        printf("cd ll change home\n");
+    {
+        chdir(getenv("HOME"));
+    }
     else if (chdir(cd->str[0]) == -1)
         printf("cd: %s: No such file or directory\n", cd->str[0]);
     return (cd);
@@ -103,24 +112,3 @@ void    *exec(t_cmds *command)
         return (ft_exec_cd(command));
     return (ft_err(command));
 }
-
-
-// void    *exec(t_cmds *command)
-// {
-//     int i;
-
-//     printf("cmd name: %s\n", command->name);
-
-//     i = 0;
-//     if (command->str)
-//     {
-//         while (command->str[i])
-//         {
-//             printf("%s\n", command->str[i]);
-//             // printf("hi err\n");
-//             i++;
-//         }
-//     }
-//     printf("---test_here---\n");
-//     return (command);
-// }

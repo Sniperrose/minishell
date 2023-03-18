@@ -2,15 +2,14 @@
 
 void    ft_add2list(t_list **list, t_list *n_elm)
 {
-    // if (!*list)
-    // {
-    //     *list = n_elm;
-    //     return ;
-    // }
+    if (!*list)
+	{
+		*list = n_elm;
+		return ;
+	}
     if (!n_elm) 
         return ;
-    if (*list)
-        n_elm->next = *list;
+    n_elm->next = *list;
     *list = n_elm;
 }
 
@@ -49,7 +48,7 @@ char    *ft_find_elm(t_list **list, char *key)
     return (NULL);
 }
 
-void    ft_del_elm(t_list *elm)
+void    ft_del_node(t_list *elm)
 {
     if (!elm)
         return ;
@@ -57,46 +56,52 @@ void    ft_del_elm(t_list *elm)
         free(elm->key);
     if (elm->val)
         free (elm->val);
+    free(elm);
 }
 
 void    ft_delete_elm(t_list **list, char *key)
 {
+    t_list  *head;
     t_list  *tmp;
-    // t_list  *new;
-    int     i;
 
     if (!list || !*list || !key)
     {
         printf("err: no list or key is null\n");
         return;
     }
+    head = *list;
     tmp = *list;
-    if (ft_strncmp(tmp->key, key, ft_strlen(key)) == 0) //1st elm del
+    if (ft_strncmp(tmp->key, key, ft_strlen(tmp->key)) == 0) //1st elm del
     {
-        ft_del_elm(tmp);
+        ft_del_node(*list);
+        // free(*list);
         *list = tmp->next;
-        return; 
+        return ;
     }
-    i = 0;
-    while (ft_strncmp(tmp->key, key, ft_strlen(key)) && tmp->next != NULL)
+    tmp = (*list)->next;
+    while (ft_strncmp(tmp->key, key, ft_strlen(tmp->key)) && (*list)->next != NULL)
     {
+        *list = (*list)->next;
         tmp = tmp->next;
-        i++;
     }
-    ft_del_elm(tmp);
-    tmp = tmp->next;
-    // new = *list;
-    // while (i-- > 0)
-    //     new = new->next;
-    // new = tmp;
-    
-    ft_del_elm(tmp);
-    *list = tmp->next;
-    printf("del test here!\nlist:\n");
-    ft_printlist(list);
-    printf("tmp:\n");
-    ft_printlist(&tmp);
+    ft_del_node((*list)->next);
+    // free((*list)->next);
+    (*list)->next = tmp->next;
+    *list = head;
 }
+//     }
+//     while (ft_strncmp(((*list)->next)->key), key, ft_strlen(key)) && (*list)->next != NULL)
+//     {
+//         *list = (*list)->next;
+//     }
+//     t_list *tmp = (*list)
+//     ft_del_elm(*list);
+//     free(*list);
+//     *list = (*list)->next;
+//     *list = head;
+//     printf("~~del test here!\nlist:\n");
+//     ft_printlist(list);
+// }
 
 // void    ft_delete_elm(t_list **list, char *key)
 // {
